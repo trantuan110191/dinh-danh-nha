@@ -3,6 +3,10 @@
   const MAX_RESULTS = 60;
   const DEBOUNCE_MS = 120;
   const LIVE_LOAD_TIMEOUT_MS = 60000;
+  const CACHE_DB_NAME = "dinh-danh-nha-cache";
+  const CACHE_STORE_NAME = "entries";
+  const CACHE_KEY = "clientCards:v1";
+  const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
   const resultsEl = document.getElementById("results");
   const metaEl = document.getElementById("resultMeta");
   const inputEl = document.getElementById("searchInput");
@@ -12,6 +16,7 @@
 
   const state = {
     clientCards: [],
+    hasRenderedCache: false,
     timer: null,
     requestId: 0,
     toastTimer: null,
@@ -125,6 +130,62 @@
     });
   }
 
+  function openCacheDb() {
+    if (!("indexedDB" in window)) return Promise.resolve(null);
+
+    return new Promise((resolve) => {
+      const request = indexedDB.open(CACHE_DB_NAME, 1);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore(CACHE_STORE_NAME, { keyPath: "key" });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => resolve(null);
+      request.onblocked = () => resolve(null);
+    });
+  }
+
+  async function readCachedCards() {
+    const db = await openCacheDb();
+    if (!db) return null;
+
+    return new Promise((resolve) => {
+      const transaction = db.transaction(CACHE_STORE_NAME, "readonly");
+      const request = transaction.objectStore(CACHE_STORE_NAME).get(CACHE_KEY);
+      request.onsuccess = () => {
+        const entry = request.result;
+        if (!entry || !Array.isArray(entry.cards)) {
+          resolve(null);
+          return;
+        }
+        resolve(entry);
+      };
+      request.onerror = () => resolve(null);
+      transaction.oncomplete = () => db.close();
+    });
+  }
+
+  async function writeCachedCards(cards) {
+    const db = await openCacheDb();
+    if (!db) return;
+
+    await new Promise((resolve) => {
+      const transaction = db.transaction(CACHE_STORE_NAME, "readwrite");
+      transaction.objectStore(CACHE_STORE_NAME).put({
+        key: CACHE_KEY,
+        cards,
+        savedAt: Date.now(),
+      });
+      transaction.oncomplete = () => {
+        db.close();
+        resolve();
+      };
+      transaction.onerror = () => {
+        db.close();
+        resolve();
+      };
+    });
+  }
+
   async function loadLiveData() {
     const [housesRows, toDanPhoRows, officersRows] = await Promise.all([
       loadGviz("Dinh danh NHA", "select A,C,D,F where F is not null"),
@@ -235,6 +296,10 @@
     metaEl.textContent = query
       ? `Hiển thị ${safeCards.length} kết quả cho "${query}"`
       : `Hiển thị ${safeCards.length} địa chỉ đầu tiên`;
+  }
+
+  function renderLoading(message) {
+    resultsEl.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
   }
 
   function renderCard(card) {
@@ -368,17 +433,37 @@
       return;
     }
 
-    metaEl.textContent = "Đang nạp trực tiếp từ Google Sheet...";
+    metaEl.textContent = "Đang kiểm tra dữ liệu đã lưu...";
+    const cachedEntry = await readCachedCards();
+    if (cachedEntry) {
+      state.clientCards = cachedEntry.cards;
+      state.hasRenderedCache = true;
+      render(searchClient(initialQuery), initialQuery);
+      const cacheIsFresh = Date.now() - (cachedEntry.savedAt || 0) < CACHE_TTL_MS;
+      metaEl.textContent = cacheIsFresh
+        ? `Đã mở nhanh từ dữ liệu lưu trên máy (${state.clientCards.length.toLocaleString("vi-VN")} địa chỉ)`
+        : "Đang dùng dữ liệu lưu trên máy, sẽ cập nhật lại từ Google Sheet";
+    } else {
+      renderLoading("Đang nạp dữ liệu lần đầu từ Google Sheet...");
+      metaEl.textContent = "Đang nạp trực tiếp từ Google Sheet...";
+    }
+
     try {
       const liveData = await loadLiveData();
       state.clientCards = buildClientCards(liveData);
-      render(searchClient(initialQuery), initialQuery);
-      if (!initialQuery) {
+      await writeCachedCards(state.clientCards);
+      const currentQuery = inputEl.value;
+      render(searchClient(currentQuery), currentQuery);
+      if (!currentQuery) {
         metaEl.textContent = `Đã nạp ${state.clientCards.length.toLocaleString("vi-VN")} địa chỉ từ Google Sheet`;
       }
       return;
     } catch (error) {
       console.warn(error);
+      if (state.hasRenderedCache) {
+        metaEl.textContent = "Đang dùng dữ liệu lưu trên máy do Google Sheet tải chậm";
+        return;
+      }
       if (!new URLSearchParams(window.location.search).has("sample")) {
         resultsEl.innerHTML = `
           <div class="empty">
