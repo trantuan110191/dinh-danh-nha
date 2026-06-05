@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Tra cứu địa bàn CSKV</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="data.sample.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <img class="hero__badge" src="assets/badge.svg" alt="Huy hiệu">
+        <div>
+          <h1>Công an phường Nam Định</h1>
+          <p>Tra cứu địa bàn CSKV</p>
+        </div>
+      </header>
+
+      <section class="status-row" aria-live="polite">
+        <span id="resultMeta">Đang tải dữ liệu...</span>
+      </section>
+
+      <section id="results" class="results" aria-label="Kết quả tra cứu"></section>
+
+      <form class="search-bar" id="searchForm" role="search">
+        <label class="sr-only" for="searchInput">Tìm kiếm theo tên gọi hoặc địa chỉ</label>
+        <input id="searchInput" name="q" type="search" placeholder="Tìm kiếm" autocomplete="off">
+        <button class="search-button" type="submit" aria-label="Tìm kiếm">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M16.5 16.5 21 21"></path>
+          </svg>
+        </button>
+      </form>
+
+      <footer class="support">
+        Quá trình sử dụng có lỗi phát sinh vui lòng liên hệ:<br>
+        Tuấn CSKV: 0899636838
+      </footer>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Police badge mark</title>
+  <desc id="desc">A compact badge-style emblem used for the lookup app header.</desc>
+  <defs>
+    <radialGradient id="gold" cx="50%" cy="38%" r="60%">
+      <stop offset="0" stop-color="#ffe88a"/>
+      <stop offset="0.58" stop-color="#f1bd2f"/>
+      <stop offset="1" stop-color="#b98708"/>
+    </radialGradient>
+    <linearGradient id="green" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#3aa861"/>
+      <stop offset="1" stop-color="#11633a"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#gold)" stroke="#fff8cf" stroke-width="5"/>
+  <circle cx="64" cy="64" r="47" fill="url(#green)" stroke="#f6d765" stroke-width="4"/>
+  <path fill="#d72522" stroke="#fff4bd" stroke-width="2" d="M64 21l10.4 26.9 28.8 1.6-22.4 18.2 7.4 27.9L64 80.9 39.8 96.6l7.4-27.9-22.4-18.2 28.8-1.6z"/>
+  <circle cx="64" cy="62" r="17" fill="#f4d44e" stroke="#fff6c8" stroke-width="3"/>
+  <path fill="#c91f24" d="M55 53h18v6H55zm4 9h10v15H59z"/>
+  <path fill="none" stroke="#fff7cb" stroke-linecap="round" stroke-width="3" d="M45 36c5-5 11-8 19-8s14 3 19 8M42 92c7 6 14 9 22 9s15-3 22-9"/>
+</svg>

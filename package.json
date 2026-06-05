@@ -1,0 +1,8 @@
+{
+  "name": "dinh-danh-nha-lookup",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node --check app.js && node --check data.sample.js"
+  }
+}
