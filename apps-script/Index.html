@@ -6,40 +6,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <?!= include("Stylesheet"); ?>
   </head>
   <body>
     <main class="app-shell">
-      <header class="hero">
-        <img class="hero__badge" alt="Huy hiệu" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='38%25' r='60%25'%3E%3Cstop offset='0' stop-color='%23ffe88a'/%3E%3Cstop offset='.58' stop-color='%23f1bd2f'/%3E%3Cstop offset='1' stop-color='%23b98708'/%3E%3C/radialGradient%3E%3ClinearGradient id='v' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%233aa861'/%3E%3Cstop offset='1' stop-color='%2311633a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='64' cy='64' r='58' fill='url(%23g)' stroke='%23fff8cf' stroke-width='5'/%3E%3Ccircle cx='64' cy='64' r='47' fill='url(%23v)' stroke='%23f6d765' stroke-width='4'/%3E%3Cpath fill='%23d72522' stroke='%23fff4bd' stroke-width='2' d='M64 21l10.4 26.9 28.8 1.6-22.4 18.2 7.4 27.9L64 80.9 39.8 96.6l7.4-27.9-22.4-18.2 28.8-1.6z'/%3E%3Ccircle cx='64' cy='62' r='17' fill='%23f4d44e' stroke='%23fff6c8' stroke-width='3'/%3E%3Cpath fill='%23c91f24' d='M55 53h18v6H55zm4 9h10v15H59z'/%3E%3Cpath fill='none' stroke='%23fff7cb' stroke-linecap='round' stroke-width='3' d='M45 36c5-5 11-8 19-8s14 3 19 8M42 92c7 6 14 9 22 9s15-3 22-9'/%3E%3C/svg%3E">
-        <div>
-          <h1>Công an phường Nam Định</h1>
-          <p>Tra cứu địa bàn CSKV</p>
+      <header class="top-app-bar">
+        <h1>Công an phường Nam Định</h1>
+        <div class="top-actions" aria-hidden="true">
+          <button class="top-icon" type="button" tabindex="-1">
+            <svg viewBox="0 0 24 24">
+              <path d="m3 11 9-8 9 8"></path>
+              <path d="M5 10v10h5v-6h4v6h5V10"></path>
+            </svg>
+          </button>
+          <button class="top-icon" type="button" tabindex="-1">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+            </svg>
+          </button>
         </div>
       </header>
 
-      <section class="status-row" aria-live="polite">
-        <span id="resultMeta">Đang tải dữ liệu...</span>
+      <section class="content-panel">
+        <section class="support-card" aria-label="Liên hệ hỗ trợ">
+          <svg class="support-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 8h.01"></path>
+            <path d="M11 12h1v5h1"></path>
+          </svg>
+          <p>
+            Quá trình sử dụng có lỗi phát sinh vui lòng liên hệ:<br>
+            <strong>Đ/C Tuân CSKV: 0899.636.838</strong>
+          </p>
+        </section>
+
+        <section class="service-banner" aria-label="Vì Nhân Dân Phục Vụ">
+          <img alt="Vì Nhân Dân Phục Vụ" src="https://lh3.googleusercontent.com/aida/AP1WRLvwFHXPB3qn-2EpvjEF80BhJvXHJME5LaM_uYkM1AepCCIUppMtPK-cKLW9Nr5JXbk3zFWwlEtjWY0epStJzvp0tt4CKREA4NwVdEE3OkbxP8id6BeesVIGq4fIHQXf8XLwBr240feYZ52R2vsHPoabrocZxlc3moNTGTuJodt4V_6R7jSS1mph9e0oy7EpnksES5MId6a71qgIZAySfeTr9kkxWBsx2MlIFohgSQKZLmqOJ0jFgZ_LimF8">
+          <div class="service-banner__overlay">
+            <h2>Vì Nhân Dân Phục Vụ</h2>
+            <p>Tra cứu thông tin Cảnh sát khu vực và Cán bộ điều tra phụ trách địa bàn phường Nam Định.</p>
+          </div>
+        </section>
+
+        <section class="status-row" aria-live="polite">
+          <span id="resultMeta">Đang tải dữ liệu...</span>
+        </section>
+
+        <section id="results" class="results" aria-label="Kết quả tra cứu"></section>
       </section>
 
-      <section id="results" class="results" aria-label="Kết quả tra cứu"></section>
-
-      <form class="search-bar" id="searchForm" role="search">
-        <label class="sr-only" for="searchInput">Tìm kiếm theo tên gọi hoặc địa chỉ</label>
-        <input id="searchInput" name="q" type="search" placeholder="Tìm kiếm" autocomplete="off">
-        <button class="search-button" type="submit" aria-label="Tìm kiếm">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"></circle>
-            <path d="M16.5 16.5 21 21"></path>
-          </svg>
-        </button>
-      </form>
-
-      <footer class="support">
-        Quá trình sử dụng có lỗi phát sinh vui lòng liên hệ:<br>
-        Tuấn CSKV: 0899636838
-      </footer>
+      <div class="bottom-nav">
+        <form class="search-bar" id="searchForm" role="search">
+          <button class="search-button" type="submit" aria-label="Tìm kiếm">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M16.5 16.5 21 21"></path>
+            </svg>
+          </button>
+          <label class="sr-only" for="searchInput">Tìm kiếm theo tên gọi hoặc địa chỉ</label>
+          <input id="searchInput" name="q" type="search" placeholder="Tìm kiếm..." autocomplete="off">
+        </form>
+      </div>
 
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </main>

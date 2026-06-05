@@ -226,19 +226,21 @@
   function renderCard(card) {
     return `
       <article class="result-card">
-        <div class="result-card__code">${escapeHtml(card.code || "-")}</div>
-        <h2 class="result-card__title">${escapeHtml(card.title)}</h2>
-        <p class="result-card__sub">${escapeHtml(card.alias || card.tdpName || "")}</p>
+        <div class="result-card__head">
+          <div class="result-card__code">${escapeHtml(card.code || "-")}</div>
+          <h2 class="result-card__title">${escapeHtml(card.title)}</h2>
+          <p class="result-card__sub">${escapeHtml(card.alias || card.tdpName || "")}</p>
+        </div>
         <div class="officers">
-          ${renderOfficer(card.cskv)}
+          ${renderOfficer(card.cskv, "cskv")}
           <div class="divider" aria-hidden="true"></div>
-          ${renderOfficer(card.hinhSu)}
+          ${renderOfficer(card.hinhSu, "hinh-su")}
         </div>
       </article>
     `;
   }
 
-  function renderOfficer(person) {
+  function renderOfficer(person, kind) {
     const safePerson = person || {};
     const phone = safePerson.phone || "";
     const dial = firstPhone(phone);
@@ -246,13 +248,13 @@
     const copyDisabled = phone ? "" : 'aria-disabled="true" disabled';
 
     return `
-      <section class="officer">
+      <section class="officer officer--${kind}">
         <h3 class="officer__role">${escapeHtml(safePerson.role)}</h3>
         <p class="officer__name">${escapeHtml(safePerson.name || "Chưa có dữ liệu")}</p>
         <p class="officer__phone">${escapeHtml(phone || "-")}</p>
         <div class="actions">
-          <a class="action" ${callAttrs}>${icon.phone}<span>Gọi ngay</span></a>
-          <button class="action" type="button" data-copy="${escapeHtml(phone)}" ${copyDisabled}>${icon.copy}<span>Sao chép SĐT</span></button>
+          <a class="action action--call" ${callAttrs}>${icon.phone}<span>Gọi ngay</span></a>
+          <button class="action action--copy" type="button" data-copy="${escapeHtml(phone)}" ${copyDisabled}>${icon.copy}<span>Sao chép SĐT</span></button>
         </div>
       </section>
     `;
