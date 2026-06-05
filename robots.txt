@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Indexing is blocked by meta robots tags in the HTML.
