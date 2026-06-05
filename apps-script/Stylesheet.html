@@ -60,8 +60,7 @@ button {
 .top-app-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
   min-width: 0;
   height: 64px;
   padding: 0 16px;
@@ -71,34 +70,14 @@ button {
 }
 
 .top-app-bar h1 {
-  max-width: 198px;
   margin: 0;
   font-family: "Hanken Grotesk", "Public Sans", sans-serif;
   font-size: 18px;
   line-height: 24px;
   font-weight: 700;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 
-.top-actions {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 4px;
-}
-
-.top-icon {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: #ffffff;
-}
-
-.top-icon svg,
 .support-card__icon,
 .action svg,
 .search-button svg,
@@ -107,12 +86,6 @@ button {
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.top-icon svg {
-  width: 23px;
-  height: 23px;
-  stroke-width: 2.4;
 }
 
 .content-panel {
@@ -152,53 +125,6 @@ button {
 .support-card strong {
   color: var(--on-surface);
   font-weight: 700;
-}
-
-.service-banner {
-  position: relative;
-  height: 160px;
-  margin-bottom: 24px;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-}
-
-.service-banner img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-}
-
-.service-banner::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.66), rgba(0, 0, 0, 0.06));
-}
-
-.service-banner__overlay {
-  position: absolute;
-  inset: auto 16px 16px;
-  z-index: 1;
-  color: #ffffff;
-}
-
-.service-banner h2 {
-  margin: 0 0 2px;
-  font-family: "Hanken Grotesk", "Public Sans", sans-serif;
-  font-size: 18px;
-  line-height: 24px;
-  font-weight: 700;
-}
-
-.service-banner p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
 }
 
 .status-row {
@@ -378,8 +304,7 @@ button {
 }
 
 .action:focus-visible,
-.search-button:focus-visible,
-.top-icon:focus-visible {
+.search-button:focus-visible {
   outline: 3px solid rgba(180, 0, 6, 0.26);
   outline-offset: 2px;
 }
