@@ -40,14 +40,12 @@
 
     if (!safeCards.length) {
       resultsEl.innerHTML = `<div class="empty">${query ? "Không tìm thấy địa chỉ phù hợp." : "Nhập tên gọi hoặc địa chỉ để tra cứu."}</div>`;
-      metaEl.textContent = query ? `Không có kết quả cho "${query}"` : "Sẵn sàng tra cứu theo cột C hoặc cột D";
+      metaEl.textContent = "";
       return;
     }
 
     resultsEl.innerHTML = safeCards.map(renderCard).join("");
-    metaEl.textContent = query
-      ? `Hiển thị ${safeCards.length} kết quả cho "${query}"`
-      : `Hiển thị ${safeCards.length} địa chỉ đầu tiên`;
+    metaEl.textContent = "";
   }
 
   function renderCard(card) {
@@ -105,7 +103,7 @@
 
   function searchServer(query) {
     const requestId = ++state.requestId;
-    metaEl.textContent = "Đang tìm trong Google Sheet...";
+    metaEl.textContent = "";
     google.script.run
       .withSuccessHandler((cards) => {
         if (requestId === state.requestId) render(cards, query);
@@ -113,7 +111,7 @@
       .withFailureHandler((error) => {
         if (requestId !== state.requestId) return;
         resultsEl.innerHTML = '<div class="empty">Không đọc được dữ liệu từ Google Sheet.</div>';
-        metaEl.textContent = error && error.message ? error.message : "Lỗi tải dữ liệu";
+        metaEl.textContent = "";
       })
       .searchPlaces(query, MAX_RESULTS);
   }

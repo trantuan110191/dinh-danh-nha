@@ -288,14 +288,12 @@
 
     if (!safeCards.length) {
       resultsEl.innerHTML = `<div class="empty">${query ? "Không tìm thấy địa chỉ phù hợp." : "Nhập tên gọi hoặc địa chỉ để tra cứu."}</div>`;
-      metaEl.textContent = query ? `Không có kết quả cho "${query}"` : "Sẵn sàng tra cứu theo cột C hoặc cột D";
+      metaEl.textContent = "";
       return;
     }
 
     resultsEl.innerHTML = safeCards.map(renderCard).join("");
-    metaEl.textContent = query
-      ? `Hiển thị ${safeCards.length} kết quả cho "${query}"`
-      : `Hiển thị ${safeCards.length} địa chỉ đầu tiên`;
+    metaEl.textContent = "";
   }
 
   function renderLoading(message) {
@@ -359,7 +357,7 @@
 
   function searchServer(query) {
     const requestId = ++state.requestId;
-    metaEl.textContent = "Đang tìm trong Google Sheet...";
+    metaEl.textContent = "";
     google.script.run
       .withSuccessHandler((cards) => {
         if (requestId === state.requestId) render(cards, query);
@@ -367,7 +365,7 @@
       .withFailureHandler((error) => {
         if (requestId !== state.requestId) return;
         resultsEl.innerHTML = '<div class="empty">Không đọc được dữ liệu từ Google Sheet.</div>';
-        metaEl.textContent = error && error.message ? error.message : "Lỗi tải dữ liệu";
+        metaEl.textContent = "";
       })
       .searchPlaces(query, MAX_RESULTS);
   }
@@ -433,19 +431,16 @@
       return;
     }
 
-    metaEl.textContent = "Đang kiểm tra dữ liệu đã lưu...";
+    metaEl.textContent = "";
     const cachedEntry = await readCachedCards();
     if (cachedEntry) {
       state.clientCards = cachedEntry.cards;
       state.hasRenderedCache = true;
       render(searchClient(initialQuery), initialQuery);
-      const cacheIsFresh = Date.now() - (cachedEntry.savedAt || 0) < CACHE_TTL_MS;
-      metaEl.textContent = cacheIsFresh
-        ? `Đã mở nhanh từ dữ liệu lưu trên máy (${state.clientCards.length.toLocaleString("vi-VN")} địa chỉ)`
-        : "Đang dùng dữ liệu lưu trên máy, sẽ cập nhật lại từ Google Sheet";
+      metaEl.textContent = "";
     } else {
-      renderLoading("Đang nạp dữ liệu lần đầu từ Google Sheet...");
-      metaEl.textContent = "Đang nạp trực tiếp từ Google Sheet...";
+      resultsEl.innerHTML = "";
+      metaEl.textContent = "";
     }
 
     try {
@@ -454,14 +449,12 @@
       await writeCachedCards(state.clientCards);
       const currentQuery = inputEl.value;
       render(searchClient(currentQuery), currentQuery);
-      if (!currentQuery) {
-        metaEl.textContent = `Đã nạp ${state.clientCards.length.toLocaleString("vi-VN")} địa chỉ từ Google Sheet`;
-      }
+      metaEl.textContent = "";
       return;
     } catch (error) {
       console.warn(error);
       if (state.hasRenderedCache) {
-        metaEl.textContent = "Đang dùng dữ liệu lưu trên máy do Google Sheet tải chậm";
+        metaEl.textContent = "";
         return;
       }
       if (!new URLSearchParams(window.location.search).has("sample")) {
@@ -471,21 +464,21 @@
             Google chỉ cho web local đọc link Sheet khi file được chia sẻ "bất kỳ ai có đường liên kết đều có thể xem" hoặc khi app chạy bằng Google Apps Script.
           </div>
         `;
-        metaEl.textContent = "Google Sheet đang chặn đọc trực tiếp";
+        metaEl.textContent = "";
         return;
       }
     }
 
     if (!window.APP_DATA) {
       resultsEl.innerHTML = '<div class="empty">Không nạp được Google Sheet. Hãy chia sẻ sheet ở chế độ có thể xem bằng link hoặc triển khai bản Apps Script.</div>';
-      metaEl.textContent = "Không tải được dữ liệu trực tiếp";
+      metaEl.textContent = "";
       return;
     }
 
     state.clientCards = buildClientCards(window.APP_DATA);
     render(searchClient(initialQuery), initialQuery);
     if (!initialQuery) {
-      metaEl.textContent = "Đang dùng dữ liệu mẫu do URL có ?sample=1";
+      metaEl.textContent = "";
     }
   }
 
