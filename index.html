@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260605-stitch-red">
+    <link rel="stylesheet" href="styles.css?v=20260606-clear-search">
     <script defer src="data.sample.js"></script>
     <script defer src="app.js"></script>
   </head>
@@ -44,14 +44,6 @@
           </p>
         </section>
 
-        <section class="service-banner" aria-label="Vì Nhân Dân Phục Vụ">
-          <img alt="Vì Nhân Dân Phục Vụ" src="https://lh3.googleusercontent.com/aida/AP1WRLvwFHXPB3qn-2EpvjEF80BhJvXHJME5LaM_uYkM1AepCCIUppMtPK-cKLW9Nr5JXbk3zFWwlEtjWY0epStJzvp0tt4CKREA4NwVdEE3OkbxP8id6BeesVIGq4fIHQXf8XLwBr240feYZ52R2vsHPoabrocZxlc3moNTGTuJodt4V_6R7jSS1mph9e0oy7EpnksES5MId6a71qgIZAySfeTr9kkxWBsx2MlIFohgSQKZLmqOJ0jFgZ_LimF8">
-          <div class="service-banner__overlay">
-            <h2>Vì Nhân Dân Phục Vụ</h2>
-            <p>Tra cứu thông tin Cảnh sát khu vực và Cán bộ điều tra phụ trách địa bàn phường Nam Định.</p>
-          </div>
-        </section>
-
         <section class="status-row" aria-live="polite">
           <span id="resultMeta">Đang tải dữ liệu...</span>
         </section>
@@ -69,6 +61,12 @@
           </button>
           <label class="sr-only" for="searchInput">Tìm kiếm theo tên gọi hoặc địa chỉ</label>
           <input id="searchInput" name="q" type="search" placeholder="Tìm kiếm..." autocomplete="off">
+          <button class="clear-search" id="clearSearch" type="button" aria-label="Xóa nội dung tìm kiếm">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
         </form>
       </div>
 

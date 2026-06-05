@@ -1,12 +1,13 @@
 (() => {
   const SHEET_ID = "1y4Cis5U7w41evU7td57bjiZfBFBltniyWEdPWyOrtLc";
   const MAX_RESULTS = 60;
-  const DEBOUNCE_MS = 240;
+  const DEBOUNCE_MS = 120;
   const LIVE_LOAD_TIMEOUT_MS = 60000;
   const resultsEl = document.getElementById("results");
   const metaEl = document.getElementById("resultMeta");
   const inputEl = document.getElementById("searchInput");
   const formEl = document.getElementById("searchForm");
+  const clearSearchEl = document.getElementById("clearSearch");
   const toastEl = document.getElementById("toast");
 
   const state = {
@@ -199,12 +200,25 @@
 
   function searchClient(rawQuery) {
     const query = normalizeText(rawQuery);
-    return state.clientCards
-      .map((card, index) => ({ card, index, score: scoreCard(card, query) }))
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score || a.index - b.index)
-      .slice(0, MAX_RESULTS)
-      .map((item) => item.card);
+    if (!query) return state.clientCards.slice(0, MAX_RESULTS);
+
+    const buckets = new Map();
+    for (const card of state.clientCards) {
+      const score = scoreCard(card, query);
+      if (!score) continue;
+      if (!buckets.has(score)) buckets.set(score, []);
+      const bucket = buckets.get(score);
+      if (bucket.length < MAX_RESULTS) bucket.push(card);
+    }
+
+    return [...buckets.keys()]
+      .sort((a, b) => b - a)
+      .flatMap((score) => buckets.get(score))
+      .slice(0, MAX_RESULTS);
+  }
+
+  function updateSearchControls() {
+    formEl.classList.toggle("has-query", inputEl.value.trim().length > 0);
   }
 
   function render(cards, rawQuery) {
@@ -327,12 +341,23 @@
   async function init() {
     const initialQuery = new URLSearchParams(window.location.search).get("q") || "";
     inputEl.value = initialQuery;
+    updateSearchControls();
 
     formEl.addEventListener("submit", (event) => {
       event.preventDefault();
       runSearch(true);
     });
-    inputEl.addEventListener("input", () => runSearch(false));
+    inputEl.addEventListener("input", () => {
+      updateSearchControls();
+      runSearch(false);
+    });
+    clearSearchEl.addEventListener("click", () => {
+      if (!inputEl.value) return;
+      inputEl.value = "";
+      updateSearchControls();
+      runSearch(true);
+      inputEl.focus();
+    });
     resultsEl.addEventListener("click", (event) => {
       const button = event.target.closest("[data-copy]");
       if (button) copyText(button.dataset.copy);

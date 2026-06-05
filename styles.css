@@ -100,7 +100,8 @@ button {
 .top-icon svg,
 .support-card__icon,
 .action svg,
-.search-button svg {
+.search-button svg,
+.clear-search svg {
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -360,10 +361,7 @@ button {
   color: #ffffff;
 }
 
-.officer--cskv .action--call {
-  background: var(--primary-container);
-}
-
+.officer--cskv .action--call,
 .officer--hinh-su .action--call {
   background: var(--tertiary-container);
 }
@@ -380,10 +378,15 @@ button {
 
 .action:focus-visible,
 .search-button:focus-visible,
-#searchInput:focus-visible,
 .top-icon:focus-visible {
   outline: 3px solid rgba(180, 0, 6, 0.26);
   outline-offset: 2px;
+}
+
+#searchInput:focus,
+#searchInput:focus-visible {
+  outline: 0;
+  box-shadow: none;
 }
 
 .action[aria-disabled="true"] {
@@ -412,13 +415,16 @@ button {
 }
 
 .search-bar {
+  position: relative;
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
   align-items: center;
   min-height: 50px;
+  border: 1px solid rgba(230, 189, 183, 0.7);
   border-radius: 12px;
-  background: var(--secondary-fixed);
-  color: #1d1d00;
+  background: #ffffff;
+  color: var(--on-surface);
+  box-shadow: 0 4px 14px rgba(22, 28, 34, 0.08);
 }
 
 .search-button {
@@ -442,12 +448,12 @@ button {
 #searchInput {
   min-width: 0;
   height: 50px;
-  padding: 0 14px 0 2px;
+  padding: 0 44px 0 2px;
   border: 0;
   border-radius: 0 12px 12px 0;
   appearance: none;
   background: transparent;
-  color: #1d1d00;
+  color: var(--on-surface);
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
@@ -460,7 +466,43 @@ button {
 }
 
 #searchInput::placeholder {
-  color: rgba(29, 29, 0, 0.72);
+  color: rgba(22, 28, 34, 0.58);
+}
+
+.clear-search {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  transform: translateY(-50%) scale(0.82);
+  border: 0;
+  border-radius: 999px;
+  background: rgba(22, 28, 34, 0.1);
+  color: var(--on-surface);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease, background-color 120ms ease;
+}
+
+.clear-search svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.8;
+}
+
+.clear-search:active {
+  background: rgba(22, 28, 34, 0.18);
+}
+
+.search-bar.has-query .clear-search {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .toast {

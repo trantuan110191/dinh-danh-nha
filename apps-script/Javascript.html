@@ -6,6 +6,7 @@
   const metaEl = document.getElementById("resultMeta");
   const inputEl = document.getElementById("searchInput");
   const formEl = document.getElementById("searchForm");
+  const clearSearchEl = document.getElementById("clearSearch");
   const toastEl = document.getElementById("toast");
 
   const state = {
@@ -86,6 +87,10 @@
     `;
   }
 
+  function updateSearchControls() {
+    formEl.classList.toggle("has-query", inputEl.value.trim().length > 0);
+  }
+
   function runSearch(immediate = false) {
     window.clearTimeout(state.timer);
     const query = inputEl.value;
@@ -145,11 +150,22 @@
   }
 
   function init() {
+    updateSearchControls();
     formEl.addEventListener("submit", (event) => {
       event.preventDefault();
       runSearch(true);
     });
-    inputEl.addEventListener("input", () => runSearch(false));
+    inputEl.addEventListener("input", () => {
+      updateSearchControls();
+      runSearch(false);
+    });
+    clearSearchEl.addEventListener("click", () => {
+      if (!inputEl.value) return;
+      inputEl.value = "";
+      updateSearchControls();
+      runSearch(true);
+      inputEl.focus();
+    });
     resultsEl.addEventListener("click", (event) => {
       const button = event.target.closest("[data-copy]");
       if (button) copyText(button.dataset.copy);
