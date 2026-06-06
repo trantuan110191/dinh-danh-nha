@@ -48,7 +48,7 @@ button {
 .app-shell {
   position: relative;
   display: grid;
-  grid-template-rows: 64px auto minmax(0, 1fr) auto;
+  grid-template-rows: 48px auto minmax(0, 1fr) auto;
   width: min(100%, 390px);
   height: 100dvh;
   margin: 0 auto;
@@ -61,7 +61,7 @@ button {
   align-items: center;
   justify-content: flex-start;
   min-width: 0;
-  height: 64px;
+  height: 48px;
   padding: 0 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--primary);
@@ -71,8 +71,8 @@ button {
 .top-app-bar h1 {
   margin: 0;
   font-family: "Hanken Grotesk", "Public Sans", sans-serif;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 22px;
   font-weight: 700;
   white-space: nowrap;
 }
