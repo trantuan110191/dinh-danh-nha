@@ -13,7 +13,8 @@
   const formEl = document.getElementById("searchForm");
   const clearSearchEl = document.getElementById("clearSearch");
   const toastEl = document.getElementById("toast");
-  const bottomNavEl = document.querySelector(".bottom-nav");
+  const appShellEl = document.querySelector(".app-shell");
+  const contentPanelEl = document.querySelector(".content-panel");
 
   const state = {
     clientCards: [],
@@ -342,11 +343,22 @@
     }
   }
 
+  function setSearchMode(isSearching) {
+    appShellEl?.classList.toggle("is-searching", isSearching);
+    if (isSearching) {
+      window.scrollTo(0, 0);
+      if (contentPanelEl) contentPanelEl.scrollTop = 0;
+    }
+  }
+
   function keepSearchVisible() {
     updateAppViewport();
+    const isSearching = document.activeElement === inputEl;
+    setSearchMode(isSearching);
     window.requestAnimationFrame(() => {
-      if (document.activeElement === inputEl) {
-        bottomNavEl?.scrollIntoView({ block: "end", inline: "nearest" });
+      if (isSearching) {
+        window.scrollTo(0, 0);
+        if (contentPanelEl) contentPanelEl.scrollTop = 0;
       }
     });
   }
@@ -496,7 +508,10 @@
     });
     inputEl.addEventListener("focus", keepSearchVisible);
     inputEl.addEventListener("blur", () => {
-      window.setTimeout(updateAppViewport, 120);
+      window.setTimeout(() => {
+        setSearchMode(false);
+        updateAppViewport();
+      }, 120);
     });
     inputEl.addEventListener("input", () => {
       updateSearchControls();
