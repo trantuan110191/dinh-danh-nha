@@ -1,6 +1,5 @@
 :root {
   color-scheme: light;
-  --keyboard-bottom: 0px;
   --primary: #b40006;
   --primary-container: #da251d;
   --secondary-fixed: #eaea00;
@@ -103,7 +102,7 @@ button {
 
 .content-panel {
   min-height: 0;
-  padding: 16px 16px 104px;
+  padding: 16px 16px 24px;
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -120,7 +119,7 @@ button {
 }
 
 .app-shell.is-searching .content-panel {
-  padding: 10px 16px 96px;
+  padding-block: 10px;
 }
 
 .support-card {
@@ -369,17 +368,12 @@ button {
 }
 
 .bottom-nav {
-  position: fixed;
-  left: 50%;
-  bottom: var(--keyboard-bottom, 0px);
-  z-index: 20;
-  width: min(100%, 390px);
+  position: relative;
+  z-index: 5;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
   border-top: 0;
   background: transparent;
   box-shadow: none;
-  pointer-events: none;
 }
 
 .search-bar {
@@ -393,7 +387,6 @@ button {
   background: #ffffff;
   color: var(--on-surface);
   box-shadow: 0 4px 14px rgba(22, 28, 34, 0.08);
-  pointer-events: auto;
 }
 
 .search-button {

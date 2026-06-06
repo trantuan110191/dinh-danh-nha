@@ -338,13 +338,9 @@
   function updateAppViewport() {
     const viewport = window.visualViewport;
     const height = Math.round((viewport && viewport.height) || window.innerHeight || 0);
-    const keyboardBottom = viewport
-      ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
-      : 0;
     if (height > 0) {
       document.documentElement.style.setProperty("--app-height", `${height}px`);
     }
-    document.documentElement.style.setProperty("--keyboard-bottom", `${Math.round(keyboardBottom)}px`);
   }
 
   function setSearchMode(isSearching) {
