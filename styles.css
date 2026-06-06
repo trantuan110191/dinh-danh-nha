@@ -155,7 +155,7 @@ button {
 .result-card {
   overflow: hidden;
   border: 1px solid var(--outline-variant);
-  border-radius: 8px;
+  border-radius: 14px;
   background: var(--surface-card);
   box-shadow: var(--shadow-sm);
 }
@@ -276,7 +276,7 @@ button {
   gap: 8px;
   min-height: 40px;
   padding: 8px 10px;
-  border-radius: 4px;
+  border-radius: 8px;
   text-decoration: none;
   font-size: 12px;
   line-height: 16px;
@@ -293,11 +293,17 @@ button {
 .action--call {
   border: 1px solid transparent;
   color: #ffffff;
+  box-shadow: 0 4px 10px rgba(42, 99, 67, 0.22);
 }
 
 .officer--cskv .action--call,
 .officer--hinh-su .action--call {
-  background: var(--tertiary-container);
+  background: linear-gradient(135deg, #2a6343 0%, #4f9468 52%, #2f7a50 100%);
+}
+
+.action--call[aria-disabled="true"] {
+  background: #d6d9df;
+  box-shadow: none;
 }
 
 .action--copy {
