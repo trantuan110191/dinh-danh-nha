@@ -13,6 +13,7 @@
   const formEl = document.getElementById("searchForm");
   const clearSearchEl = document.getElementById("clearSearch");
   const toastEl = document.getElementById("toast");
+  const bottomNavEl = document.querySelector(".bottom-nav");
 
   const state = {
     clientCards: [],
@@ -333,6 +334,23 @@
     formEl.classList.toggle("has-query", inputEl.value.trim().length > 0);
   }
 
+  function updateAppViewport() {
+    const viewport = window.visualViewport;
+    const height = Math.round((viewport && viewport.height) || window.innerHeight || 0);
+    if (height > 0) {
+      document.documentElement.style.setProperty("--app-height", `${height}px`);
+    }
+  }
+
+  function keepSearchVisible() {
+    updateAppViewport();
+    window.requestAnimationFrame(() => {
+      if (document.activeElement === inputEl) {
+        bottomNavEl?.scrollIntoView({ block: "end", inline: "nearest" });
+      }
+    });
+  }
+
   function render(cards, rawQuery) {
     const query = String(rawQuery || "").trim();
     const safeCards = Array.isArray(cards) ? cards : [];
@@ -340,11 +358,13 @@
     if (!safeCards.length) {
       resultsEl.innerHTML = `<div class="empty">${query ? "Không tìm thấy địa chỉ phù hợp." : "Nhập tên gọi hoặc địa chỉ để tra cứu."}</div>`;
       metaEl.textContent = "";
+      if (query) keepSearchVisible();
       return;
     }
 
     resultsEl.innerHTML = safeCards.map(renderCard).join("");
     metaEl.textContent = "";
+    if (query && safeCards.length === 1) keepSearchVisible();
   }
 
   function renderLoading(message) {
@@ -462,14 +482,26 @@
     const initialQuery = new URLSearchParams(window.location.search).get("q") || "";
     inputEl.value = initialQuery;
     updateSearchControls();
+    updateAppViewport();
+
+    window.addEventListener("resize", updateAppViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", keepSearchVisible);
+      window.visualViewport.addEventListener("scroll", updateAppViewport);
+    }
 
     formEl.addEventListener("submit", (event) => {
       event.preventDefault();
       runSearch(true);
     });
+    inputEl.addEventListener("focus", keepSearchVisible);
+    inputEl.addEventListener("blur", () => {
+      window.setTimeout(updateAppViewport, 120);
+    });
     inputEl.addEventListener("input", () => {
       updateSearchControls();
       runSearch(false);
+      keepSearchVisible();
     });
     clearSearchEl.addEventListener("click", () => {
       if (!inputEl.value) return;
