@@ -26,6 +26,34 @@
     phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6.4 6.4l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9z"></path></svg>',
     copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>',
   };
+  const DISPLAY_ABBREVIATIONS = new Set([
+    "ANTT",
+    "BV",
+    "CA",
+    "CAND",
+    "CATP",
+    "CCCD",
+    "CMND",
+    "CSGT",
+    "CSHS",
+    "CSKV",
+    "CSĐT",
+    "ĐC",
+    "ĐTV",
+    "HĐND",
+    "KĐT",
+    "KSV",
+    "MN",
+    "PCCC",
+    "QL",
+    "TAND",
+    "TĐC",
+    "TDP",
+    "THCS",
+    "THPT",
+    "UBND",
+    "VKS",
+  ]);
 
   function hasServer() {
     return typeof google !== "undefined" && google.script && google.script.run;
@@ -64,9 +92,32 @@
       .replace(/'/g, "&#039;");
   }
 
+  function phoneDigits(value) {
+    return String(value || "").replace(/\D/g, "");
+  }
+
   function firstPhone(value) {
-    const match = String(value || "").match(/0\d{8,10}/);
+    const match = phoneDigits(value).match(/0\d{8,10}/);
     return match ? match[0] : "";
+  }
+
+  function formatPhone(value) {
+    const digits = firstPhone(value);
+    if (!digits) return String(value || "");
+    if (digits.length <= 7) return digits;
+    return `${digits.slice(0, 4)}.${digits.slice(4, 7)}.${digits.slice(7)}`;
+  }
+
+  function formatDisplayText(value) {
+    return String(value || "").replace(/[\p{L}\p{M}\p{N}]+/gu, (word) => {
+      const upper = word.toLocaleUpperCase("vi-VN");
+      if (DISPLAY_ABBREVIATIONS.has(upper) || /\d/.test(word) || /^[IVXLCDM]+$/i.test(word)) {
+        return upper;
+      }
+
+      const lower = word.toLocaleLowerCase("vi-VN");
+      return lower.charAt(0).toLocaleUpperCase("vi-VN") + lower.slice(1);
+    });
   }
 
   function buildClientCards(data) {
@@ -301,12 +352,16 @@
   }
 
   function renderCard(card) {
+    const title = formatDisplayText(card.title || "");
+    const subtitle = formatDisplayText(card.alias || card.tdpName || "");
+    const code = String(card.code || "-").toLocaleUpperCase("vi-VN");
+
     return `
       <article class="result-card">
         <div class="result-card__head">
-          <div class="result-card__code">${escapeHtml(card.code || "-")}</div>
-          <h2 class="result-card__title">${escapeHtml(card.title)}</h2>
-          <p class="result-card__sub">${escapeHtml(card.alias || card.tdpName || "")}</p>
+          <div class="result-card__code">${escapeHtml(code)}</div>
+          <h2 class="result-card__title">${escapeHtml(title)}</h2>
+          <p class="result-card__sub">${escapeHtml(subtitle)}</p>
         </div>
         <div class="officers">
           ${renderOfficer(card.cskv, "cskv")}
@@ -321,17 +376,19 @@
     const safePerson = person || {};
     const phone = safePerson.phone || "";
     const dial = firstPhone(phone);
+    const displayPhone = formatPhone(phone);
+    const copyPhone = displayPhone || phone;
     const callAttrs = dial ? `href="tel:${dial}"` : 'aria-disabled="true"';
-    const copyDisabled = phone ? "" : 'aria-disabled="true" disabled';
+    const copyDisabled = copyPhone ? "" : 'aria-disabled="true" disabled';
 
     return `
       <section class="officer officer--${kind}">
         <h3 class="officer__role">${escapeHtml(safePerson.role)}</h3>
         <p class="officer__name">${escapeHtml(safePerson.name || "Chưa có dữ liệu")}</p>
-        <p class="officer__phone">${escapeHtml(phone || "-")}</p>
+        <p class="officer__phone">${escapeHtml(displayPhone || "-")}</p>
         <div class="actions">
           <a class="action action--call" ${callAttrs}>${icon.phone}<span>Gọi ngay</span></a>
-          <button class="action action--copy" type="button" data-copy="${escapeHtml(phone)}" ${copyDisabled}>${icon.copy}<span>Sao chép SĐT</span></button>
+          <button class="action action--copy" type="button" data-copy="${escapeHtml(copyPhone)}" ${copyDisabled}>${icon.copy}<span>Sao chép SĐT</span></button>
         </div>
       </section>
     `;
