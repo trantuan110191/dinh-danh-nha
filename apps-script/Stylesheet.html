@@ -58,24 +58,56 @@ button {
 }
 
 .top-app-bar {
+  position: relative;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   min-width: 0;
   height: 48px;
   padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: var(--primary);
+  border-bottom: 0;
+  background: linear-gradient(180deg, #df0010 0%, #b40006 55%, #810004 100%);
   color: #ffffff;
+  box-shadow:
+    0 7px 14px rgba(80, 0, 4, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -3px 0 rgba(91, 0, 5, 0.58);
+}
+
+.top-app-bar::before,
+.top-app-bar::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.top-app-bar::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 24%, transparent 72%, rgba(0, 0, 0, 0.16)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%);
+}
+
+.top-app-bar::after {
+  left: 12px;
+  right: 12px;
+  bottom: -6px;
+  height: 6px;
+  background: linear-gradient(180deg, #780004, #4d0003);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 9px) 100%, 9px 100%);
 }
 
 .top-app-bar h1 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-family: "Hanken Grotesk", "Public Sans", sans-serif;
   font-size: 17px;
   line-height: 22px;
   font-weight: 700;
   white-space: nowrap;
+  text-shadow: 0 2px 2px rgba(67, 0, 3, 0.45);
 }
 
 .support-card__icon,
